@@ -25,7 +25,7 @@ public class ViewPortExtensionConnector extends AbstractExtensionConnector {
     	  int wx = widget.getOffsetWidth()+x;
     	  int wy = widget.getOffsetHeight()+y;
     	  int scrollTop = Window.getScrollTop();
-    	  int scrollLeft = Window.getScrollTop();
+    	  int scrollLeft = Window.getScrollLeft();
     	  int windowBottom = Window.getClientHeight()+scrollTop;
     	  int windowRight = Window.getClientWidth()+scrollLeft;
     	  

@@ -49,6 +49,9 @@ Debugging client side code in the viewportextension-demo project:
  
 ## Release notes
 
+### Version 0.1.1
+- Bugfix in horizontal position calculation
+
 ### Version 0.1.0
 - Initial release, feedback is welcome
 
