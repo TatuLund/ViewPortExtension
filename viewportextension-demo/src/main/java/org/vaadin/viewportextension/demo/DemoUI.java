@@ -7,17 +7,23 @@ import javax.servlet.annotation.WebServlet;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 
 @Theme("demo")
 @Title("ViewPortExtension Add-on Demo")
 @SuppressWarnings("serial")
-public class DemoUI extends UI
-{
+public class DemoUI extends UI {
+	
+    VerticalLayout log = new VerticalLayout();
 
     @WebServlet(value = "/*", asyncSupported = true)
     @VaadinServletConfiguration(productionMode = false, ui = DemoUI.class)
@@ -32,12 +38,22 @@ public class DemoUI extends UI
     		super(text);
     		this.setHeight("100px");
     		this.setWidth("100%");
+    		this.addStyleName("border");
+    		this.addStyleName(ValoTheme.LABEL_HUGE);
             extension = new ViewPortExtension(this);
             extension.addViewPortStatusChangedListener(event -> {
             	if (event.isInViewPort()) {
-            		System.out.println(this.getValue() +" is in the view port");
+            		log.addComponentAsFirst(new Label(this.getValue() +" is in the view port"));
+            		if (log.getComponentCount() == 500) {
+            			Component comp = log.getComponent(499);
+            			log.removeComponent(comp);
+            		}
             	} else {
-            		System.out.println(this.getValue() +" is not in the view port");
+            		log.addComponentAsFirst(new Label(this.getValue() +" is not in the view port"));
+            		if (log.getComponentCount() == 500) {
+            			Component comp = log.getComponent(499);
+            			log.removeComponent(comp);
+            		}
             	}
             });    		
     	}
@@ -51,8 +67,13 @@ public class DemoUI extends UI
     protected void init(VaadinRequest request) {
 
         // Show it in the middle of the screen
-        final VerticalLayout layout = new VerticalLayout();
-        layout.setStyleName("demoContentLayout");
+    	HorizontalLayout main = new HorizontalLayout();
+    	main.setSizeFull();
+        main.setStyleName("demoContentLayout");
+        int height = Page.getCurrent().getBrowserWindowHeight();
+    	Panel panel = new Panel("Content: These labels sense view port");
+    	panel.setHeight(height+"px");
+        VerticalLayout layout = new VerticalLayout();
         layout.setWidth("100%");
         layout.setMargin(false);
         layout.setSpacing(false);
@@ -60,6 +81,11 @@ public class DemoUI extends UI
         	MyComponent component = new MyComponent("Label "+i);
         	layout.addComponent(component);
         }
-        setContent(layout);
+        panel.setContent(layout);
+    	Panel logPanel = new Panel("Log: Scroll content on the rigth");
+    	logPanel.setHeight(height+"px");
+    	logPanel.setContent(log);
+        main.addComponents(logPanel,panel);
+        setContent(main);
     }
 }

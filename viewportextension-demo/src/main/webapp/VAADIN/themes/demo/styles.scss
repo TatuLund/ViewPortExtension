@@ -19,6 +19,10 @@ $darkgreen: darken($green, 30%);
 		background-repeat: no-repeat;
 	}
 	
+	.border {
+		border: 1px black solid;
+	}
+	
 	// You can also customize your component for the demo
 	// app, but remember that these styles are not part of
 	// the component. To include built-in CSS for your component,
