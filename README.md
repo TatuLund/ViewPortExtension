@@ -52,6 +52,10 @@ Debugging client side code in the viewportextension-demo project:
  
 ## Release notes
 
+### Version 1.0.0
+- Rebuild against Vaadin 8.13. Avoids logged warnings with listeners.
+- Improve demo
+
 ### Version 0.1.1
 - Bugfix in horizontal position calculation
 

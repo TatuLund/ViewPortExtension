@@ -4,6 +4,7 @@ import org.vaadin.viewportextension.ViewPortExtension;
 
 import javax.servlet.annotation.WebServlet;
 
+import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
@@ -18,6 +19,7 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
+@Push
 @Theme("demo")
 @Title("ViewPortExtension Add-on Demo")
 @SuppressWarnings("serial")
@@ -33,6 +35,8 @@ public class DemoUI extends UI {
     public class MyComponent extends Label {
 
     	ViewPortExtension extension;
+        Thread t;
+    	int counter = 0;
     	
     	public MyComponent(String text) {
     		super(text);
@@ -48,11 +52,32 @@ public class DemoUI extends UI {
             			Component comp = log.getComponent(499);
             			log.removeComponent(comp);
             		}
+            		t = new Thread(() -> {
+            			while (true) {
+            				try {
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
+								break;
+							}
+            				counter++;
+            				final int count = counter;
+            				if (getUI().isAttached()) {
+            					getUI().access(() -> {
+            						setValue(text + " - " + count + "s displayed");
+            					});
+            				}
+            			}
+            		});
+            		t.start();
             	} else {
             		log.addComponentAsFirst(new Label(this.getValue() +" is not in the view port"));
             		if (log.getComponentCount() == 500) {
             			Component comp = log.getComponent(499);
             			log.removeComponent(comp);
+            		}
+            		if (t != null) {
+            			t.interrupt();
+            			t = null;
             		}
             	}
             });    		
